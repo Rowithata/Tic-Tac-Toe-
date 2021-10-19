@@ -2,10 +2,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.*;
 import javax.swing.*;
-import java.util.*;
 /*Connor Chang
-  List of errors (oh god):
- * -Find where AI is storing the values for 2d array.
+ * notes to self:
+ *DONT LET THE AI CHEAT
  */
 public class Game 
 {
@@ -45,32 +44,11 @@ public class Game
 		JButton cell7= new JButton("");
 		JButton cell8= new JButton("");
 		JButton cell9= new JButton("");
-      
+		
 		JButton Reset= new JButton("");
 		JButton help= new JButton("Help");
-		JLabel Turn = new JLabel("");
+		JLabel Turn = new JLabel("Take your time, O");
 		JLabel Win = new JLabel("");
-      
-      Random rand = new Random (); //For starting positions
-      
-      //String ally = 
-      boolean isX = getChoice(f); // So that either player can move
-      
-      String ally;
-      String opponent;
-      if (isX)
-      {
-    	  ally = "X";
-    	  opponent = "O";
-      }
-      else 
-      {
-    	  opponent = "X";
-    	  ally = "O";
-    	  
-      }
-      
-      //int depth = 0; //I have no idea what this is.
 		
 		clearboard(board,cell1,cell2,cell3,cell4,cell5,cell6,cell7,cell8,cell9);
 		JLabel Wins = new JLabel("");
@@ -123,7 +101,7 @@ public class Game
 		f.add(Turn);
 		f.add(Win);
 		f.add(Wins);
-		//f.add(help);
+		f.add(help);
 		
 		cell1.setBounds(100,50,100,100);
 		cell2.setBounds(200,50,100,100);
@@ -153,8 +131,8 @@ public class Game
 		
 		ActionListener e = (ActionListener) new ActionListener()//oh lord
 		{
-			boolean player=true; //true = first player
-			//boolean error;		 //false = second player/AI
+			int player=1; 
+			boolean error;
 			int XWins = 0;
 			int YWins = 0; 
 			public void actionPerformed(ActionEvent e) 
@@ -162,57 +140,58 @@ public class Game
 				Object obj = e.getSource();
 				if(obj==cell1) //0,0
 				{
-					player = move(cell1,player,board,0,0,gamemode, isX,ally,opponent);
+					error = move(cell1,player,board,0,0,gamemode);
 				}
 				else if (obj==cell2) //1,0
 				{
-					player = move(cell2,player,board,1,0,gamemode, isX,ally,opponent);
+					error = move(cell2,player,board,1,0,gamemode);
 				}
 		    	else if (obj==cell3) //2,0
 		    	{
-		    		player = move(cell3,player,board,2,0,gamemode, isX,ally,opponent);
+		    		error = move(cell3,player,board,2,0,gamemode);
 		    	}
 		    	else if (obj==cell4) //0,1
 		    	{
-		    		player = move(cell4,player,board,0,1,gamemode, isX,ally,opponent);
+		    		error = move(cell4,player,board,0,1,gamemode);
 		    	}
 		    	else if (obj==cell5) //1,1
 		    	{
-		    		player = move(cell5,player,board,1,1,gamemode, isX,ally,opponent);
+		    		error = move(cell5,player,board,1,1,gamemode);
 		    	}
 		    	else if (obj==cell6) //2,1
 		    	{
-		    		player = move(cell6,player,board,2,1,gamemode, isX,ally,opponent);
+		    		error = move(cell6,player,board,2,1,gamemode);
 		    	}
 		    	else if (obj==cell7) //0,2
 		    	{
-		    		player = move(cell7,player,board,0,2,gamemode, isX,ally,opponent);
+		    		error = move(cell7,player,board,0,2,gamemode);
 		    	}
 		    	else if (obj==cell8) //1,2
 		    	{
-		    		player = move(cell8,player,board,1,2,gamemode, isX,ally,opponent);
+		    		error = move(cell8,player,board,1,2,gamemode);
 		    	}
 		    	else if (obj==cell9) //2,2
 		    	{
-		    		player = move(cell9,player,board,2,2,gamemode, isX,ally,opponent);
+		    		error = move(cell9,player,board,2,2,gamemode);
 		    	}
 				//Below are constants, that happen every time
 				//somebody makes a move.
-					System.out.print(player);
+				if (error!=true)
+				{
 					if (gamemode == 2/*&&checkBoard(board)*/) //For AI Mode
 					{
-						if (!player) //player 2 or AI
+						if (player%2 == 1)
 						{
-							int x [] = bestMove(kandc, board, moves, isX, ally, opponent ); //changed player to moves
+							int x [] = bestMove(kandc, board, cell1, cell2, cell3, cell4, cell5, 
+									            cell6, cell7, cell8, cell9, moves); //changed player to moves
 							x.toString();
-							
 							for (int i = 0; i <x.length; i++) //Prints out best move.
 							{
 								System.out.print(x[i]);
 							}
 	                     	AIMove(kandc, board, cell1, cell2, cell3, cell4, cell5, 
-	       	                cell6, cell7, cell8, cell9,x, opponent, isX, ally, opponent);
-	                     	player = !player;
+	       	                cell6, cell7, cell8, cell9,x);
+	                     	 player++;
 						}
 					}
 					
@@ -223,7 +202,7 @@ public class Game
 						XWins++;
 						disableBoard(cell1, cell2, cell3, cell4, cell5, 
 			       	    cell6, cell7, cell8, cell9);
-						player=true;
+						player=0;
 					}
 					else if (kandc.checkWinner("O",board)==true)
 				    {
@@ -232,21 +211,16 @@ public class Game
 						YWins++;
 						disableBoard(cell1, cell2, cell3, cell4, cell5, 
 		       	        cell6, cell7, cell8, cell9);
-						player=true;
+						player=0;
 					} 
-	                else if (!positionsLeft(kandc, board))
-	                {
-	                	JPanel panel = new JPanel();
-						JOptionPane.showMessageDialog(panel, "Tie Lmao you both dog water",
-						"Lol", JOptionPane.ERROR_MESSAGE);
-						clearboard(board,cell1,cell2,cell3,cell4,cell5,
-					    cell6,cell7,cell8,cell9);
-	                }
-				  	 
-	                 if (cell1.isEnabled()/*&&gamemode!=2*/){player=checkplayer(Turn,player,isX,ally, opponent);}
+					
+				  	 player++;
+	                 if (cell1.isEnabled()/*&&gamemode!=2*/){player=checkplayer(Turn,player);}
 	                 Wins.setText("X:"+XWins+" Wins. O:"+YWins+" Wins.");
 	               //1101111011
-			}
+	            }
+				else {error=false;}
+				}
 		};
 		
 		cell1.addActionListener((ActionListener) e);//Adds action listener to all buttons 
@@ -279,34 +253,6 @@ public class Game
 		
 	}
 	
-	private static boolean getChoice(JFrame f) 
-	{
-		Object[] options = {"X","O"};
-			int n = JOptionPane.showOptionDialog(f,
-					"Who's going first? (AI always goes second)",
-					"Welcome",
-					JOptionPane.YES_NO_OPTION,
-					JOptionPane.QUESTION_MESSAGE,
-					null,
-				options,
-				options[1]);
-			if(n == JOptionPane.YES_OPTION)
-			{
-				//Player plays X, AI plays O
-				return true;
-			}
-			else if(n == JOptionPane.NO_OPTION)
-			{
-				//Player plays O, AI plays X
-				return false;
-			}
-			else if (n== JOptionPane.CLOSED_OPTION)
-			{
-				getChoice(f);
-			}
-			return false;
-	}
-
 	public static void error ()
 	{
 		 JPanel panel = new JPanel();
@@ -347,15 +293,15 @@ public class Game
 		return board;
 	}
 	
-	public static boolean checkplayer(JLabel Turn,boolean player,boolean isX,String ally,String opponent)
+	public static int checkplayer(JLabel Turn,int player)
 	{
-     	 if (player)
+     	 if (player%2==0)
 		{
-     		 Turn.setText("Take your time,"+ally);
+			Turn.setText("Hurry up X, make your move");
 		}
 		else
 		{
-			Turn.setText("Take your time,"+opponent);
+			Turn.setText("Take your time, O");
 		}
 		return player;
 	}
@@ -395,30 +341,6 @@ public class Game
 		}
 		return 0;
 	}
-   public static int [] startingPositions  (Random rand){
-   int [] startCoords = new int [2];
-   startCoords [0] = -1;
-   startCoords [1] = -1;
-   int starter = rand.nextInt(4); 
-   if (starter == 0){
-   startCoords [0] = 0;
-   startCoords [1] = 0; 
-   }else if (starter == 1){
-   startCoords [0] = 0;
-   startCoords [1] = 2;
-   }else if (starter == 2){
-   startCoords [0] = 2;
-   startCoords [1] = 0;
-   }else if (starter == 3){
-   startCoords [0] = 2;
-   startCoords [1] = 2;
-   }else if (starter == 4){
-   startCoords [0] = 1;
-   startCoords [1] = 1;
-   }
-   return startCoords;
-   }
-
 	
 		   public static boolean positionsLeft (KnotsAndCrosses kandc, String [][] board)throws ArrayIndexOutOfBoundsException{
 		      for (int c = 0; c <=2; c++){
@@ -431,19 +353,18 @@ public class Game
 		      return false;
 		   }
 		   
-		   public static int checkWinnerConverted (KnotsAndCrosses kandc, String [][] board, boolean isX, String ally, String opponent){
+		   public static int checkWinnerConverted (KnotsAndCrosses kandc, String [][] board){
 		      int winScore = 0;
-		      if (kandc.checkWinner(ally, board)==true){
+		      if (kandc.checkWinner("X", board)==true){
 		         winScore = 10;
-		      }else if (kandc.checkWinner(opponent, board)==true){
+		      }else if (kandc.checkWinner("O", board)==true){
 		         winScore = -10;
 		      }
 		      return winScore;
 		   } 
 		  
-		   public static int AI (KnotsAndCrosses kandc,String [][] board, boolean maximizer, int moves, boolean isX, String ally, String opponent){
-            
-            int winnerValue = checkWinnerConverted(kandc, board, isX, ally, opponent);
+		   public static int AI (KnotsAndCrosses kandc,String [][] board,JButton cell1, JButton cell2, JButton cell3, JButton cell4, JButton cell5, JButton cell6, JButton cell7, JButton cell8, JButton cell9, boolean maximizer, int moves){
+		      int winnerValue = checkWinnerConverted(kandc, board);
 		      if (winnerValue == 10){
 		         return winnerValue;
 		      }else if (winnerValue == -10){
@@ -457,9 +378,10 @@ public class Game
 		         for (int i = 0; i <=2; i++){
 		            for (int j = 0; j <=2; j++){
 		               if (board [i][j] == "why" ){
-		                  board[i][j] = ally; 
-		                  score = Math.max(score, AI(kandc, board, false, moves+1, isX, ally, opponent));
+		                  board[i][j] = "X"; 
+		                  score = Math.max(score, AI(kandc, board, cell1, cell2, cell3, cell4, cell5, cell6, cell7, cell8, cell9, false, moves+1));
 		                  board[i][j] = "why";
+		                  moves++;
 		               }
 		            }
 		         }
@@ -469,8 +391,8 @@ public class Game
 		         for (int i = 0; i <=2; i++) {
 		            for (int j = 0; j <=2; j++){
 		               if (board [i][j]== "why"){
-		                  board [i][j] = opponent;
-		                  score = Math.min(score, AI(kandc, board, true, moves+1, isX, ally, opponent)); 
+		                  board [i][j] = "O";
+		                  score = Math.min(score, AI(kandc, board, cell1, cell2, cell3, cell4, cell5, cell6, cell7, cell8, cell9, true, moves+1)); 
 		                  board [i][j] = "why";                 
 		               }
 		            }
@@ -479,22 +401,21 @@ public class Game
 		      }
 		   }
 		   
-		   public static int [] bestMove (KnotsAndCrosses kandc,String [][] board, int player, boolean isX, String ally, String opponent) throws ArrayIndexOutOfBoundsException {
-            int [] bestMoveCoords= new int [2]; 
+		   public static int [] bestMove (KnotsAndCrosses kandc,String [][] board,JButton cell1, JButton cell2, JButton cell3, JButton cell4, JButton cell5, JButton cell6, JButton cell7, JButton cell8, JButton cell9, int player) throws ArrayIndexOutOfBoundsException {
+		      int [] bestMoveCoords= new int [2]; 
 		      bestMoveCoords [0] = -1;
 		      bestMoveCoords [1] = -1;
 		      int highScore = -1000;
 		      for (int i = 0; i <=2; i++) {
 		         for (int j = 0; j <=2; j++){
 		            if (board [i][j]== "why"){
-		               board [i][j] = ally;
-		               int moveValueIndex = AI(kandc, board, false, 0, isX, ally, opponent);
+		               board [i][j] = "X";
+		               int moveValueIndex = AI(kandc, board, cell1, cell2, cell3, cell4, cell5, cell6, cell7, cell8, cell9, false, 0);
 		               board[i][j] = "why";
 		               if (moveValueIndex > highScore){
 		                  bestMoveCoords [0] = i;
 		                  bestMoveCoords [1] = j;
 		                  highScore = moveValueIndex;
-                        
 		               }  
 		               //System.out.println(highScore);
 		            }
@@ -520,7 +441,7 @@ public class Game
 		   
 		   public static void AIMove ( KnotsAndCrosses kandc,String [][] board,JButton cell1,
 		   JButton cell2, JButton cell3, JButton cell4, JButton cell5, 
-		   JButton cell6, JButton cell7, JButton cell8, JButton cell9,int[] x,String player, boolean isX, String ally, String opponent) 
+		   JButton cell6, JButton cell7, JButton cell8, JButton cell9,int[] x) 
 		   {
 			   try 
 			   {
@@ -529,41 +450,41 @@ public class Game
 				   //System.out.print(X+""+Y);
 				   if(X==0&&Y==0) //Cell1
 				   {
-					   cell1.setText(opponent);
+					   cell1.setText("X");
 				   }
 				   else if(X==1&&Y==0) //Cell2
 				   {
-					   cell2.setText(opponent);
+					   cell2.setText("X");
 				   }
 				   else if(X==2&&Y==0) //Cell3
 				   {
-					   cell3.setText(opponent);
+					   cell3.setText("X");
 				   }
 				   else if(X==0&&Y==1) //Cell4
 				   {
-					   cell4.setText(opponent);
+					   cell4.setText("X");
 				   }
 				   else if(X==1&&Y==1) //Cell5
 				   {
-					   cell5.setText(opponent);
+					   cell5.setText("X");
 				   }
 				   else if(X==2&&Y==1) //Cell6
 				   {
-					   cell6.setText(opponent);
+					   cell6.setText("X");
 				   }
 				   else if(X==0&&Y==2) //Cell7
 				   {
-					   cell7.setText(opponent);
+					   cell7.setText("X");
 				   }
 				   else if(X==1&&Y==2) //Cell8
 				   {
-					   cell8.setText(opponent);
+					   cell8.setText("X");
 				   }
 				   else if(X==2&&Y==2) //Cell9
 				   {
-					   cell9.setText(opponent);
+					   cell9.setText("X");
 				   }
-			   board[X][Y]=opponent;
+			   board[X][Y]="X";
 			   }
 			   catch (Exception e)
 			   {
@@ -576,26 +497,24 @@ public class Game
 			   }
 		   }
 		   
-		   public static boolean move(JButton cell,boolean turn,String[][] board,int x, int y,int gamemode,boolean isX,String ally, String opponent)
+		   public static boolean move(JButton cell,int turn,String[][] board,int x, int y,int gamemode)
 		   {
-			   if (board[x][y] == "why") //boolean turn=player 1 or 2/AI
-			   {						 //boolean isX is player 1 X or not. 
-					   if (turn) //If player 1
-					   {
-							cell.setText(ally);
-							board[x][y]=ally;
-							return !turn;
-					   }
-					   else //If player 2 
-					   {
-						   cell.setText(opponent);
-						   board[x][y]=opponent;
-						   return !turn;
-					   }
-				   
+			   if (board[x][y] == "why")
+			   {
+				   if (turn%2==0 && gamemode!=2)//X
+				   {
+					   cell.setText("X");
+					   board[x][y]="X";
+					   return false;
+				   }
+				   else//X
+				   {
+					   cell.setText("O");
+					   board[x][y]="O";
+					   return false;
+				   }
 			   }
-			   else{error();}
-			   return turn;
+			   else{error(); return true;}
 		   }
 		   
 		   public static boolean checkBoard(String[][] board)
@@ -612,19 +531,5 @@ public class Game
 			   }
 			   return false;
 		   }
-		   
-		   public static void printBoard(String[][] board)
-		   {
-			   for (int i=0; i<=2; i++)
-			   {
-				   for (int j=0; j<=2; j++)
-				   {
-					   System.out.print(board[i][j]);
-				   }
-				   System.out.println();
-			   }
-		   }
 }
-
-
 
