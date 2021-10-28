@@ -10,9 +10,10 @@
 		      }
 		      return winScore;
 		   } 
-		  // this is a method that uses the minimax algorithm to calculate the optimal value for the given board position
-		   public static int AI (KnotsAndCrosses kandc,String [][] board,boolean maximizer, int depth, String ally, String opponent){
-            // the termination function, checks for a win or a tie in either player 
+		  //The function will terminate if either, the winnerValue is positive, indicating a win for ally
+            	  //If the depth has reached its max, primarily used as a saftey net 
+            	  //Or if there are no positions left on the board
+		   public static int AI (KnotsAndCrosses kandc,String [][] board,boolean maximizer, int depth, String ally, String opponent){ 
 		      int winnerValue = checkWinnerConverted(kandc, board, ally, opponent, depth);
             if (Math.abs(winnerValue) > 0 || depth==0 || !checkBoard(board)){
             return winnerValue;
