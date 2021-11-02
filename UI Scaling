@@ -41,3 +41,19 @@ Font font = new Font("Comic Sans MS", Font.BOLD,xVal/3);
 	   Win.setBounds((xVal/2)-(resetXSize/2),(f.getHeight()/3),400,50);
 	   Wins.setBounds((xVal/2)-(resetXSize/2),((f.getHeight()/2)-resetYSize)+(int)(resetYSize*1.25),400,50);
 		help.setBounds(0,0,100,30);
+		
+		
+		
+		
+		// put this at the begining of the program, underneath the creation of the new jframe
+		      f.setExtendedState(f.MAXIMIZED_BOTH);
+		f.setVisible(true);
+		f.setLayout(null);
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f.setResizable(true);
+		f.setCursor(0); 
+		f.getContentPane().setBackground(new Color(130, 182, 217)); //sets the background to a pale dark blue 
+		f.setDefaultLookAndFeelDecorated(true);
+		f.setSize((int)(f.getWidth()*0.80),(int)(f.getHeight()*0.80));
+      		f.setLocationRelativeTo(null);
+      		f.setExtendedState(f.MAXIMIZED_BOTH);
