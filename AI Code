@@ -1,95 +1,76 @@
-public static int checkWinnerConverted (KnotsAndCrosses kandc, String [][] board, boolean isX, String ally, String opponent){
-      if (isX == true){
-         ally = "X";
-         opponent = "O";
-      }else if (isX == false) {
-         ally = "O";
-         opponent = "X";
-      }
-      int winScore = 0;
-      if (kandc.checkWinner(ally, board)==true){
-         winScore = 10;
-      }else if (kandc.checkWinner(opponent, board)==true){
-         winScore = -10;
-      }
-      return winScore;
-   } 
-   // the minimax function brought to life, returns values for different wins 
-   public static int AI (KnotsAndCrosses kandc,String [][] board, boolean maximizer, int moves, boolean isX, String ally, String opponent){
-      if (isX == true){
-         ally = "X";
-         opponent = "O";
-      }else if (isX == false) {
-         ally = "O";
-         opponent = "X";
-      }
-   
-      int winnerValue = checkWinnerConverted(kandc, board, isX, ally, opponent);
-      if (winnerValue == 10){
-         System.out.print(moves);   
-         return winnerValue;
-      }else if (winnerValue == -10){
-         return winnerValue;
-      }else if (positionsLeft(kandc, board) == false){
-         return 0; 
-      }
-      int score = 0;
-      if (maximizer == true) {
-         score = -1000;
-         for (int i = 0; i <=2; i++){
-            for (int j = 0; j <=2; j++){
-               if (board [i][j] == "why" ){
-                  board[i][j] = ally; 
-                  score = Math.max(score, AI(kandc, board, false, moves+1, isX, ally, opponent));
-                  board[i][j] = "why";
-                  //moves++;
-               }
-            }
-         }
-         return score;
-      }else {
-         score = 1000;
-         for (int i = 0; i <=2; i++) {
-            for (int j = 0; j <=2; j++){
-               if (board [i][j]== "why"){
-                  board [i][j] = opponent;
-                  score = Math.min(score, AI(kandc, board, true, moves+1, isX, ally, opponent)); 
-                  board [i][j] = "why";                 
-               }
-            }
-         }      
-         return score;
-      }
-   }
-   public static int [] bestMove (KnotsAndCrosses kandc, String [][] board, int moves, boolean isX, String ally, String opponent){
-      if (isX == true){
-         ally = "X";
-         opponent = "O";
-      }else if (isX == false) {
-         ally = "O";
-         opponent = "X";
-      }
-      int [] bestMoveCoords= new int [2]; 
-      bestMoveCoords [0] = -1;
-      bestMoveCoords [1] = -1;
-      int highScore = -1000;
-      for (int i = 0; i <=2; i++) {
-         for (int j = 0; j <=2; j++){
-            if (board [i][j]== "why"){
-               board [i][j] = ally;
-               int moveValueIndex = AI(kandc, board, false, 0, isX, ally, opponent);
-               board[i][j] = "why";
-               if (moveValueIndex > highScore){
-                  bestMoveCoords [0] = i;
-                  bestMoveCoords [1] = j;
-                  highScore = moveValueIndex;
-               }  
-               //System.out.println(highScore);
-            }
-         }
-      }
-      return bestMoveCoords;
-   }
-   
-}
+// a method that takes the checkWinner method from KnotsAndCrosses and gives it different values based on if it is an ally or a opponent win 
+         // then takes the depth that we have searched to and subtracts it from the maximum value
+         // an ally win gives a positive value, a opponent win gives a negative value, and a tie gives 0
+		   public static int checkWinnerConverted (KnotsAndCrosses kandc, String [][] board, String ally, String opponent, int depth){
+		      int winScore = 0;
+		      if (kandc.checkWinner("X", board)==true){
+		         winScore = 10 + depth;
+		      }else if (kandc.checkWinner("O", board)==true){
+		         winScore = -10 - depth;
+		      }
+		      return winScore;
+		   } 
+		  //The function will terminate if either, the winnerValue is positive, indicating a win for ally
+            	  //If the depth has reached its max, primarily used as a saftey net 
+            	  //Or if there are no positions left on the board
+		   public static int AI (KnotsAndCrosses kandc,String [][] board,boolean maximizer, int depth, String ally, String opponent){ 
+		      int winnerValue = checkWinnerConverted(kandc, board, ally, opponent, depth);
+            if (Math.abs(winnerValue) > 0 || depth==0 || !checkBoard(board)){
+            return winnerValue;
+            }  
+		      int maxScore;
+		      if (maximizer == true) { //checks if the player is a trying to find the maximum value
+		         maxScore = Integer.MIN_VALUE;
+		         for (int i = 0; i <=2; i++){ // search all the board positions to find moves left to be made
+		            for (int j = 0; j <=2; j++){
+		               if (board [i][j] == "why" ){// if it finds a move that has not been made, it makes a move in that square for the maximizing player
+		                  board[i][j] = "X"; 
+                        //calculates the maximum value of our default value which is set to the minimum value of an integer, and the return of AI
+                        //it also lowers the depth 
+		                  maxScore = Math.max(maxScore, AI(kandc, board, false, depth-1, ally, opponent)); 
+		                  board[i][j] = "why"; // after we have found the value of the move, we undo it as to not have the cells be different from the board
+		               }
+		            }
+		         }
+		         return maxScore;
+		      }else { // this does the same thing as the maximum player but instead tries to find the minimum value, still reduces the board by 1 
+		         int minScore = Integer.MAX_VALUE;
+		         for (int i = 0; i <=2; i++) {
+		            for (int j = 0; j <=2; j++){
+		               if (board [i][j]== "why"){
+		                  board [i][j] = "O";
+		                  minScore = Math.min(minScore, AI(kandc, board, true, depth-1, ally, opponent)); 
+		                  board [i][j] = "why";                 
+		               }
+		            }
+		         }      
+		         return minScore;
+		      }
+		   }
+		   // a method that uses AI to find the value of each move avalible
+         // returns the coordinates of the said best move
+		   public static int [] bestMove (KnotsAndCrosses kandc,String [][] board, int depth, String ally, String opponent) throws ArrayIndexOutOfBoundsException {
+		      int [] bestMoveCoords= new int [2]; 
+		      bestMoveCoords [0] = -1;
+		      bestMoveCoords [1] = -1;
+		      int highScore = -1000; // our initial highest value
+		      for (int i = 0; i <=2; i++) {// searching all the board positions to find an empty one
+		         for (int j = 0; j <=2; j++){
+		            if (board [i][j]== "why"){// once it has found an empty one, it makes a move for ally player 
+		               board [i][j] = "X";
+		               int moveValueIndex = AI(kandc, board, false, depth, ally, opponent); // uses AI to find the value of that specific move
+		               board[i][j] = "why"; // undoes the move 
+		               if (moveValueIndex > highScore){ // if the value of the previous move is less than the value of the current move,
+                     // we set the coordinates of that move to our array and the value of that move to our high score
+		                  bestMoveCoords [0] = i;
+		                  bestMoveCoords [1] = j;
+		                  highScore = moveValueIndex;
+		               }  
+		               //System.out.println(highScore);
+		            }
+		         }
+		      }
+		      return bestMoveCoords;
+		   }
+
 
