@@ -3,39 +3,6 @@ import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 
-
-
-/*public class KnootsAndCrosses implements ActionListenner{
-
-   TicTacToe(){
-   
-   }
-   public static void actionPerformed(){
-   
-   }
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   public static void main(String[] args){
-   
-      TicTactoe tictactoe = new TicTacToe();
-   }
-}  */
-
-
-
-
 public class KnotsAndCrosses{
    String[][] board; 
    String x = "X";
@@ -47,12 +14,14 @@ public class KnotsAndCrosses{
    
    public boolean checkWinner(String player,String[][] board){
    int checkrow = 0; 
+   int direction = -1;
    int[] checkColumn = new int[3];
    int diagonal1 = 0;
    int diagonal2 = 0; 
    
       for(int i = 0; i <3; i++){
          checkrow = 0; 
+         
          for(int j = 0; j < 3; j++){
             if ( board[j][i] == null ){
                continue;
@@ -71,15 +40,23 @@ public class KnotsAndCrosses{
             
             if(checkrow == 3){
                return true;
+               
             }
             
             for(int k = 0; k < 3; k++){
                if(checkColumn[k] == 3){
                   return true; 
+                  
                }
             }
-            if(diagonal1 == 3 || diagonal2 == 3){
-               return true; 
+            if(diagonal1 == 3 ){
+               return true;
+               
+            }
+            
+            if(diagonal2 == 3){
+               return true;
+               
             }
             
                
@@ -87,6 +64,78 @@ public class KnotsAndCrosses{
       }
       
       return false; 
+   }
+   
+   public ArrayList<Integer> lineCord(String player,String[][] board){//Coen look here
+      
+      ArrayList<Integer> cordsDirection = new ArrayList<Integer>();
+      int checkrow = 0; 
+      int direction = -1;
+      int[] checkColumn = new int[3];
+      int diagonal1 = 0;
+      int diagonal2 = 0; 
+   
+      for(int i = 0; i <3; i++){
+         checkrow = 0; 
+         
+         for(int j = 0; j < 3; j++){
+            if ( board[j][i] == null ){
+               continue;
+            }
+            
+            else if (board[j][i].equals(player)){
+               checkrow++;
+               checkColumn[j]++;
+               if(i == j){
+                  diagonal1++;
+               }
+               if(i + j == 2){
+                  diagonal2++;
+               }
+            }
+            
+            if(checkrow == 3){
+               
+               
+               cordsDirection.add(0, j);
+               cordsDirection.add(1, i);
+               cordsDirection.add(2, 1);
+               return cordsDirection;
+            }
+            
+            for(int k = 0; k < 3; k++){
+               if(checkColumn[k] == 3){
+                  
+                  cordsDirection.add(0, j);
+                  cordsDirection.add(1, i);
+                  cordsDirection.add(2, 2);
+                  return cordsDirection;            
+                  
+               }
+            }  
+            if(diagonal1 == 3 ){
+              
+               cordsDirection.add(0, j);
+               cordsDirection.add(1, i);
+               cordsDirection.add(2, 3);
+               return cordsDirection;             
+            }
+            
+            if(diagonal2 == 3){
+               //commented out return statements
+               cordsDirection.add(0, j);
+               cordsDirection.add(1, i);
+               cordsDirection.add(2, 4);
+               return cordsDirection;  
+                
+            }
+            
+               
+         }
+      }
+      return cordsDirection;
+   
+   
    }
    
    public void printBoard(){
