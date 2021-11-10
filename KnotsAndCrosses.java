@@ -68,7 +68,7 @@ public class KnotsAndCrosses{
    
    public ArrayList<Integer> lineCord(String player,String[][] board){//Coen look here
       
-      ArrayList<Integer> cordsDirection = new ArrayList<Integer>();
+      ArrayList<Integer> cordsDirection = new ArrayList<Integer>(); //first cell: x cord , second cell: y cord, thrid cell: direction
       int checkrow = 0; 
       int direction = -1;
       int[] checkColumn = new int[3];
@@ -97,9 +97,9 @@ public class KnotsAndCrosses{
             if(checkrow == 3){
                
                
-               cordsDirection.add(0, j);
+               cordsDirection.add(0, j); 
                cordsDirection.add(1, i);
-               cordsDirection.add(2, 1);
+               cordsDirection.add(2, 1); //dirction: horizontal
                return cordsDirection;
             }
             
@@ -108,7 +108,7 @@ public class KnotsAndCrosses{
                   
                   cordsDirection.add(0, j);
                   cordsDirection.add(1, i);
-                  cordsDirection.add(2, 2);
+                  cordsDirection.add(2, 2); //dircetion: vertical
                   return cordsDirection;            
                   
                }
@@ -117,7 +117,7 @@ public class KnotsAndCrosses{
               
                cordsDirection.add(0, j);
                cordsDirection.add(1, i);
-               cordsDirection.add(2, 3);
+               cordsDirection.add(2, 3); //direction: negative diagonal
                return cordsDirection;             
             }
             
@@ -125,7 +125,7 @@ public class KnotsAndCrosses{
                //commented out return statements
                cordsDirection.add(0, j);
                cordsDirection.add(1, i);
-               cordsDirection.add(2, 4);
+               cordsDirection.add(2, 4); //direction: positive diagnoal 
                return cordsDirection;  
                 
             }
