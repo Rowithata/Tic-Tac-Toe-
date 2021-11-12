@@ -1,0 +1,159 @@
+//these are the changes for the checkwinner method
+//All I did was remove the disable board call and have it call winLine instead
+private boolean checkWinner() 
+            {
+               if (kandc.checkWinner("O", board) == true)
+               {
+                  Win.setText("You did it, O!");
+                  Turn.setText("");
+                  YWins++;
+                  winLine(cell1, cell2, cell3, cell4, cell5, cell6, cell7, cell8, cell9, kandc, board, "O");
+                  player = true;
+                  return true;
+               }
+               else if (kandc.checkWinner("X", board) == true)
+               {
+                  Win.setText("Good job X");
+                  Turn.setText("");
+                  XWins++;
+                  winLine(cell1, cell2, cell3, cell4, cell5, cell6, cell7, cell8, cell9, kandc, board, "X");
+                  player = true;
+                  return true;
+               }
+               return false;
+            }
+//here are the changes to clearboard, I put all the cells into a list
+//then I go through the list seting the text to "", enabling all the cells, and setting the foreground back to black
+
+public static String[][] clearboard(String[][] board, JButton cell1, JButton cell2, JButton cell3, JButton cell4,
+   		JButton cell5, JButton cell6, JButton cell7, JButton cell8, JButton cell9) {
+      for (int i = 0; i <= 2; i++) // Changing all values to "Why"
+      {
+         for (int j = 0; j <= 2; j++) {
+            board[j][i] = "why";
+         }
+      }
+      List<JButton> cells = new ArrayList<JButton>();
+      cells.add(cell1);
+      cells.add(cell2);
+      cells.add(cell3);
+      cells.add(cell4);
+      cells.add(cell5);
+      cells.add(cell6);
+      cells.add(cell7);
+      cells.add(cell8);
+      cells.add(cell9);
+      for(int i = 0; i < 9; i++){
+      cells.get(i).setText("");
+      cells.get(i).setEnabled(true);
+      cells.get(i).setForeground(Color.BLACK);
+      }
+      return board;
+   }
+   
+  // I choose to place this method above disableBoard and bellow best move (around line 475 in my verion)
+  //This is the method winLine, that makes a line of cells and changes their text to white
+  //it starts by taking the coordinates of the last cell in the line as well as the direction of the line which is calculated in KnotsAndCrosses.lineCord
+  //we store the direction as a variable and translate the coordinates into the corresponding numbered cell
+  //Then we add all the cells to a list to store have better acces to them 
+  //finally we use the direction and the last cell in the line to change the foreground of each cell that is in the line to white 
+  //and disable the rest of the cells that are not within the line 
+   public static void winLine(JButton cell1,
+   		JButton cell2, JButton cell3, JButton cell4, JButton cell5, 
+   		JButton cell6, JButton cell7, JButton cell8, JButton cell9, KnotsAndCrosses kandc, String [][] board, String player){
+         List<JButton> grid = new ArrayList<JButton>();
+         List<Integer> coords = kandc.lineCord(player, board);
+         int x = (int)coords.get(0);
+         int y = (int)coords.get(1);
+         int startCell = 0;
+         if(x == 2 && y == 0){
+         startCell = 3;
+         }else if (x == 2 && y == 1){
+         startCell = 6;
+         }else if (x == 2 && y == 2){
+         startCell = 9;
+         }else if (x == 1 && y == 2){
+         startCell = 8;
+         }else if (x == 0 && y == 2){
+         startCell = 7;
+         }
+         int direction = (int)coords.get(2);
+         grid.add(cell1);
+         grid.add(cell2);
+         grid.add(cell3); 
+         grid.add(cell4);
+         grid.add(cell5);
+         grid.add(cell6);
+         grid.add(cell7);
+         grid.add(cell8);
+         grid.add(cell9);
+         
+         if(direction == 1){ // horizontal
+               for (int i = 1; i <= 3; i++){
+               grid.get(startCell-i).setForeground(Color.WHITE);
+               }
+            if (y == 0) {
+               for(int j = 0; j < 6; j++){
+               grid.get(3+j).setEnabled(false);
+               } 
+            }else if (y == 1){
+               for (int j = 0; j < 3; j++){
+               grid.get(0+j).setEnabled(false);
+               }
+               for (int k = 0; k < 3; k++){
+               grid.get(6+k).setEnabled(false);
+               }
+            }else if(y == 2){
+               for (int l = 0; l < 6; l++){
+               grid.get(l).setEnabled(false);
+               }
+            }
+         }else if(direction == 2){ //vertical
+            for (int i = 0; i < 3; i++){
+            grid.get((startCell-1)-(3*i)).setForeground(Color.WHITE);
+            }
+            if(x == 0){
+               for (int j = 0; j < 3; j++){
+               grid.get((startCell-(3*j))).setEnabled(false);
+               }
+               for (int k = 0; k < 3; k++){
+               grid.get((startCell+1)-(3*k)).setEnabled(false);
+               }
+            }else if(x == 1){
+               for(int l = 0; l < 3; l++){
+               grid.get((startCell-2)-(3*l)).setEnabled(false);
+               }
+               for(int m = 0; m < 3; m++){
+               grid.get((startCell)-(3*m)).setEnabled(false);
+               }
+            }else if(x == 2){
+               for(int n = 0; n < 3; n++){
+               grid.get((startCell-2)-(3*n)).setEnabled(false);
+               }
+               for(int p = 0; p < 3; p++){
+               grid.get((startCell-3)-(3*p)).setEnabled(false);
+               }
+            }
+         }else if (direction == 3){ //diagonal with a negative slope
+            for(int i = 0; i < 3; i++){
+            grid.get((startCell-1)-(i*4)).setForeground(Color.WHITE);
+            }
+            for(int j = 0; j < 3; j++){
+            grid.get(j+1).setEnabled(false);
+            }
+            for(int k = 0; k < 3; k++){
+            grid.get(k+5).setEnabled(false);
+            }
+         }else if (direction == 4){ // diagonal with a positive slope 
+         for (int i = 0; i < 3; i++){
+         grid.get((startCell-1)-(2*i)).setForeground(Color.WHITE);
+         }
+         grid.get(0).setEnabled(false); //I had to disable these cells manually scince there was no corelation between their numbers 
+         grid.get(1).setEnabled(false);
+         grid.get(3).setEnabled(false);
+         grid.get(5).setEnabled(false);
+         grid.get(7).setEnabled(false);
+         grid.get(8).setEnabled(false);
+         }
+         
+   }
