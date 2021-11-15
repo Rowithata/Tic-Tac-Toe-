@@ -1,4 +1,4 @@
-# Tic-Tac-Toe-game
+# Tic-Tac-Toe
 
 A interractive game of tic tac toe. 
 
