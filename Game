@@ -618,9 +618,9 @@ public class Game {
 	}
 
 	@SuppressWarnings("deprecation")
-	public static String[] getOptions() 
+	public static String[] getOptions() //Method used to get options from player. Stored in a String array
 	{
-		Font font = new Font("Comic Sans MS", Font.PLAIN, 40);
+		Font font = new Font("Comic Sans MS", Font.PLAIN, 40); //Initializes fonts
 		Font Smallfont = new Font("Comic Sans MS", Font.PLAIN, 15);
 		JFrame f = new JFrame("Pick stuff");
 		f.getContentPane();
@@ -700,13 +700,13 @@ public class Game {
 				if (obj == duo) 
 				{
 					Options[0] = setOption(currentGamemode, "1v1");
-					X.setEnabled(false);
+					X.setEnabled(false); 
 					O.setEnabled(false);
 				} 
 				else if (obj == AI)
 				{
 					Options[0] = setOption(currentGamemode, "AI");
-					X.setEnabled(true);
+					X.setEnabled(true); //Will enable option 2 since it is neccesary for this gamemode
 					O.setEnabled(true);
 				} 
 				else if (obj == X) 
@@ -728,7 +728,7 @@ public class Game {
 			}
 		};
 
-		duo.addActionListener((ActionListener) e);
+		duo.addActionListener((ActionListener) e); //Adding action listeners to all buttons
 		AI.addActionListener((ActionListener) e);
 		X.addActionListener((ActionListener) e);
 		O.addActionListener((ActionListener) e);
@@ -740,18 +740,18 @@ public class Game {
 		{
 			boolean gameStart = false;
 
-			public void actionPerformed(ActionEvent e) 
+			public void actionPerformed(ActionEvent e)  
 			{
 				if (Options[0] == "1v1" && Options[2]!=null) //If 1v1
 				{
-					Options[1] = Options[2];
+					Options[1] = Options[2]; //Option is 2 is set to 1 for 1v1 mode.
 					gameStart = confirmGame(f, Options);
 				}
 				else if (Options[0]=="AI" && Options[1]!=null && Options[2]!=null) //If AI
 				{
 					gameStart = confirmGame(f, Options);
 				}
-				else
+				else //If not all needed options are filled in
 				{
 					JPanel panel = new JPanel();
 					JOptionPane.showMessageDialog(panel, "Fill in all the boxes pls", "damn", JOptionPane.ERROR_MESSAGE);
@@ -764,14 +764,14 @@ public class Game {
 		return Options;
 	}
 
-	public static String setOption(JLabel text, String option) {
+	public static String setOption(JLabel text, String option) { //Sets the JLabel text to whatever the option parameter is set to.
 		text.setText("Current Selection:" + option);
 		return option;
 	}
 
 	@SuppressWarnings("deprecation")
-	public static boolean confirmGame(JFrame f, String[] Options) throws ArrayIndexOutOfBoundsException {
-		try 
+	public static boolean confirmGame(JFrame f, String[] Options) throws ArrayIndexOutOfBoundsException { //Creates OptionPane asking player
+		try 											      //if they choose the correct gamemodes
 		{
 				Object[] options = { "Lets go", "Nah", };
 				int n = JOptionPane.showOptionDialog(f,
