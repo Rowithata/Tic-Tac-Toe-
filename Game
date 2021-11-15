@@ -475,7 +475,7 @@ public class Game {
 		return bestMoveCoords;
 	}
 	// AI Stuff End
-	public static void disableBoard(JButton cell1, JButton cell2, JButton cell3, JButton cell4, JButton cell5,
+	public static void disableBoard(JButton cell1, JButton cell2, JButton cell3, JButton cell4, JButton cell5, //method used to disable all cells
 			JButton cell6, JButton cell7, JButton cell8, JButton cell9) {
 		cell1.setEnabled(false);
 		cell2.setEnabled(false);
@@ -488,7 +488,7 @@ public class Game {
 		cell9.setEnabled(false);
 	}
 
-	public static void enableBoard(JButton cell1, JButton cell2, JButton cell3, JButton cell4, JButton cell5,
+	public static void enableBoard(JButton cell1, JButton cell2, JButton cell3, JButton cell4, JButton cell5, //method used to enable all cells
 			JButton cell6, JButton cell7, JButton cell8, JButton cell9) {
 		cell1.setEnabled(true);
 		cell2.setEnabled(true);
@@ -547,20 +547,12 @@ public class Game {
 			}
 			board[X][Y] = opponent;
 		}
-		catch (Exception e) 
+		catch (Exception e) //If AI returns something outside of the scope (-1,-1), It assumes a tie was met
 		{
 			Turn.setText("Tie what");
 			disableBoard(cell1, cell2, cell3, cell4, cell5, cell6, cell7, cell8, cell9);
 		}
 	}
-
-	public static int[] getAIMove() //currently not being used
-	{
-		Random rand = new Random();
-		int[] startingAIMove = startingPositions(rand);
-		return startingAIMove;
-	}
-
 	public static boolean move(JButton cell, boolean turn, String[][] board, int x, int y, String gamemode, boolean isX,
 			String ally, String opponent, String[] Options) {
 		if (board[x][y] == "why") // boolean turn=player 1 or 2/AI Options[2] decides who goes first
@@ -590,7 +582,7 @@ public class Game {
 		return turn;
 	}
 
-	public static boolean checkBoard(String[][] board) {
+	public static boolean checkBoard(String[][] board) { //Uses a nested forloop to see if any cells have not been occupied.
 		for (int i = 0; i <= 2; i++) {
 			for (int j = 0; j <= 2; j++) {
 				if (board[j][i] == "why") {
@@ -599,20 +591,6 @@ public class Game {
 			}
 		}
 		return false;
-	}
-
-	public static void printBoard(String[][] board) {
-		for (int i = 0; i <= 2; i++) {
-			for (int j = 0; j <= 2; j++) {
-				if (board[j][i] != "why") {
-					System.out.print(board[j][i]);
-				} else {
-					System.out.print("_");
-				}
-			}
-			System.out.println();
-		}
-		System.out.println("-+-+-+-+-");
 	}
 
 	@SuppressWarnings("deprecation")
@@ -661,7 +639,7 @@ public class Game {
 		currentPlayer.setBounds(300, 300, 200, 50);
 		currentStartingPlayer.setBounds(300, 500, 200, 50);
 
-		JButton duo = new JButton("1v1");
+		JButton duo = new JButton("1v1"); //set bounds for option 1
 		JButton AI = new JButton("AI");
 		f.add(duo);
 		f.add(AI);
@@ -670,7 +648,7 @@ public class Game {
 		duo.setBounds(50, 60, 100, 100);
 		AI.setBounds(150, 60, 100, 100);
 
-		JButton X = new JButton("X");
+		JButton X = new JButton("X"); //set bounds for option 2
 		JButton O = new JButton("O");
 		f.add(X);
 		f.add(O);
@@ -679,7 +657,7 @@ public class Game {
 		X.setBounds(50, 260, 100, 100);
 		O.setBounds(150, 260, 100, 100);
 
-		JButton XFirst = new JButton("X");
+		JButton XFirst = new JButton("X"); //set bounds for option 3
 		JButton OFirst = new JButton("O");
 		f.add(XFirst);
 		f.add(OFirst);
@@ -690,7 +668,7 @@ public class Game {
 		X.setEnabled(false);
 		O.setEnabled(false);
 
-		ActionListener e = (ActionListener) new ActionListener()// oh lord
+		ActionListener e = (ActionListener) new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e) 
 			{
