@@ -12,8 +12,6 @@ The origin is placed at the top left corner of the grid of buttons
 This means that the y values start at the top with 0 and end with 2 at the bottom 
 The cells start with 1 at the top left and read left to right then up to down 
 Example: cell 4 is the second from the top and furthest to the left, it is represented by the coordinates, (0, 1)
-				
-				This is for me later. I don't know where exactly to put this since 
 */
 public class Game {
 
